@@ -16,6 +16,7 @@ import java.util.Map;
  * Runs a scenario, or a "synthetic" scenario derived from an Examples row.
  */
 public class ExecutionUnitRunner extends ParentRunner<Step> {
+    private static final String SCENARIO_METHOD_NAME = "scenario";
     private final Runtime runtime;
     private final CucumberScenario cucumberScenario;
     private final JUnitReporter jUnitReporter;
@@ -42,7 +43,7 @@ public class ExecutionUnitRunner extends ParentRunner<Step> {
     @Override
     public Description getDescription() {
         if (description == null) {
-            description = Description.createSuiteDescription(getName(), cucumberScenario.getGherkinModel());
+            description = Description.createTestDescription(getName(), SCENARIO_METHOD_NAME, cucumberScenario.getGherkinModel());
 
             if (cucumberScenario.getCucumberBackground() != null) {
                 for (Step backgroundStep : cucumberScenario.getCucumberBackground().getSteps()) {

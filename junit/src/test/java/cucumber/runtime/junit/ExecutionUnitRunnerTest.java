@@ -13,6 +13,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 public class ExecutionUnitRunnerTest {
     @Test
@@ -64,5 +65,26 @@ public class ExecutionUnitRunnerTest {
 
         assertEquals("description includes scenario name as class name", runner.getName(), stepDescription.getClassName());
         assertEquals("description includes step keyword and name as method name", step.getKeyword() + step.getName(), stepDescription.getMethodName());
+    }
+
+    /**
+     * This is required for gradle compatibility (last tested with gradle 1.7).
+     */
+    @Test
+    public void hasDescriptionWithNonNullMethodNameForScenario() throws Exception {
+        List<CucumberFeature> features = CucumberFeature.load(
+                new ClasspathResourceLoader(this.getClass().getClassLoader()),
+                asList("cucumber/runtime/junit/fa.feature"),
+                Collections.emptyList()
+        );
+
+        ExecutionUnitRunner runner = new ExecutionUnitRunner(
+                null,
+                (CucumberScenario) features.get(0).getFeatureElements().get(0),
+                null
+        );
+
+        Description runnerDescription = runner.getDescription();
+        assertNotNull("Description method name must not be null for scenario.", runnerDescription.getMethodName());
     }
 }
